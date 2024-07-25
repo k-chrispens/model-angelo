@@ -109,32 +109,29 @@ MRCObject = namedtuple("MRCObject", ["grid", "voxel_size", "global_origin"])
 def load_mrc(mrc_fn: str, multiply_global_origin: bool = True) -> MRCObject:
     mrc_file = mrc.open(mrc_fn, "r")
     voxel_size = float(mrc_file.voxel_size.x)
-
+ 
     if voxel_size <= 0:
         raise RuntimeError(f"Seems like the MRC file: {mrc_fn} does not have a header.")
-
+ 
     c = mrc_file.header["mapc"]
     r = mrc_file.header["mapr"]
     s = mrc_file.header["maps"]
-
+ 
     global_origin = mrc_file.header["origin"]
     global_origin = np.array([global_origin.x, global_origin.y, global_origin.z])
     global_origin[0] += mrc_file.header["nxstart"]
     global_origin[1] += mrc_file.header["nystart"]
     global_origin[2] += mrc_file.header["nzstart"]
-
+ 
     if multiply_global_origin:
         global_origin *= mrc_file.voxel_size.x
-
-    if c == 1 and r == 2 and s == 3:
-        grid = mrc_file.data
-    elif c == 3 and r == 2 and s == 1:
-        grid = np.moveaxis(mrc_file.data, [0, 1, 2], [2, 1, 0])
-    elif c == 2 and r == 1 and s == 3:
-        grid = np.moveaxis(mrc_file.data, [1, 2, 0], [2, 1, 0])
-    else:
-        raise RuntimeError("MRC file axis arrangement not supported!")
-
+    
+    axis_map = {c: 0, r: 1, s: 2}
+    source_axes = [axis_map[1], axis_map[2], axis_map[3]]
+    dest_axes = [2, 1, 0]
+   
+    if source_axes != [0, 1, 2]:
+        grid = np.moveaxis(mrc_file.data, source_axes, dest_axes)
     return MRCObject(grid, voxel_size, global_origin)
 
 
