@@ -3,11 +3,11 @@ ENVNAME=model_angelo
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
-      echo "Make sure you have conda installed"
+      echo "Make sure you have micromamba installed"
       echo "Make sure you have set the TORCH_HOME environment variable to a suitable public location (if installing on a cluster)"
       echo "-h, --help                   simple help and instructions"
       echo "-w, --download-weights       use if you want to also download the weights"
-      echo "-n, --name                   name of model-angelo conda environment, default: model_angelo"
+      echo "-n, --name                   name of model-angelo micromamba environment, default: model_angelo"
       exit 0
       ;;
     -w|--download-weights)
@@ -29,37 +29,23 @@ if [ -z "${TORCH_HOME}" ] && [ -n "${DOWNLOAD_WEIGHTS}" ]; then
   exit 1;
 fi
 
-is_conda_model_angelo_installed=$(conda info --envs | grep $ENVNAME -c)
-if [[ "${is_conda_model_angelo_installed}" == "0" ]];then
-  conda create -n $ENVNAME python=3.10 -y;
+is_micromamba_model_angelo_installed=$(micromamba info --envs | grep $ENVNAME -c)
+if [[ "${is_micromamba_model_angelo_installed}" == "0" ]];then
+  micromamba create -n $ENVNAME python=3.10 -y;
 fi
 
 torch_home_path="${TORCH_HOME}"
 
-if [[ `command -v activate` ]]
-then
-  source `which activate` $ENVNAME
-else
-  conda activate $ENVNAME
-fi
+micromamba activate $ENVNAME
   
-# Check to make sure model_angelo is activated
-if [[ "${CONDA_DEFAULT_ENV}" != $ENVNAME ]]
-then
-  echo "Could not run conda activate $ENVNAME, please check the errors";
-  exit 1;
-fi
-
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
+micromamba install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia -y
 
 if [ "${torch_home_path}" ]
 then
-  conda env config vars set TORCH_HOME="${torch_home_path}"
+  micromamba env config vars set TORCH_HOME="${torch_home_path}"
 fi
 
-python_exc="${CONDA_PREFIX}/bin/python"
-
-$python_exc -mpip install .
+python -m pip install .
 
 if [[ "${DOWNLOAD_WEIGHTS}" ]]; then
   echo "Writing weights to ${TORCH_HOME}"

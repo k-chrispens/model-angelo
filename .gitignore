@@ -137,6 +137,9 @@ dmypy.json
 *.hmm
 *.prot
 
+# Weights
+weights/
+
 # Test files
 test_structures/
 test/
