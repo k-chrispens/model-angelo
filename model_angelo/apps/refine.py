@@ -185,6 +185,8 @@ def main(parsed_args):
         gnn_infer_args.device = parsed_args.device
         gnn_infer_args.write_hmm_profiles = parsed_args.write_hmm_profiles
         gnn_infer_args.refine = True
+        gnn_infer_args.voxel_size = 1.0 # Pulled this and below values from the get_base_parser function in utils.gnn_inference_utils
+        gnn_infer_args.fp16 = False
 
         if parsed_args.config_path is None:
             gnn_infer_args.aggressive_pruning = True
