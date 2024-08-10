@@ -9,8 +9,8 @@
     "model_checkpoint": "chkpt.torch",
     "bfactor": 0,
     "batch_size": 4,
-    "stride": 8,
-    "box_size": 32,
+    "stride": 4,
+    "box_size": 18,
     "dont_mask_input": true,
     "threshold": 0.05,
     "save_real_coordinates": false,
@@ -18,7 +18,7 @@
     "do_nucleotides": false,
     "save_backbone_trace": false,
     "save_ca_grid": false,
-    "crop": 6,
+    "crop": 2,
     "save_output_grid": false
   },
   "gnn_infer_args": {
@@ -31,9 +31,8 @@
     "fp16": false,
     "batch_size": 1,
     "voxel_size": 1.0,
-    "struct": "output/see_alpha_output/see_alpha_merged_output.cif",
     "model_dir": "/home/kchrispens/.cache/torch/hub/checkpoints/model_angelo_v1.0/nucleotides/gnn",
     "write_hmm_profiles": false,
-    "refine": true
+    "refine": false
   }
 }

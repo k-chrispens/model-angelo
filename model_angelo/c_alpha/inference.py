@@ -194,7 +194,7 @@ def infer(args):
 
     bz = args.box_size
     stride = args.stride
-    if grid.shape[-1] - bz <= 0:
+    if grid_np.shape[-1] - bz <= 0:
         raise ValueError("Box size is larger than the grid size")
     x_coordinates = [i * stride for i in range((grid.shape[-1] - bz) // stride)] + [
         grid.shape[-1] - 1 - bz
